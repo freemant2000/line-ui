@@ -54,19 +54,28 @@ class LineUIApp:
         self.init_line_pane()
         self.init_console()
         curs_set(0)
-        self.mod.on_ready()
+        self.call_handler("on_ready")
+        self.done=False
         n = 0
-        while True:
+        while not self.done:
             k = self.safe_get_key()
             if k != "":
                 self.key = k
-                self.mod.on_key()
+                self.call_handler("on_key")
             n += 1
             if n == 20:
-                self.mod.on_second()
+                self.call_handler("on_second")
                 n = 0
-            self.mod.on_update()
+            self.call_handler("on_update")
             sleep(1 / 20)
+
+    def call_handler(self, handler_name):
+      h=self.mod.get(handler_name)
+      if h:
+        h()
+
+    def stop(self):
+      self.done=True
 
     def draw_at(self, x, s, erase=True):
         if x < 0:
@@ -96,34 +105,29 @@ class LineUIApp:
         except:
             return ""
 
-
 line_ui_app = LineUIApp()
-
 
 def draw(s):
     line_ui_app.draw_at(0, s)
 
-
 def draw_at(x, s):
     line_ui_app.draw_at(x, s)
-
 
 def draw_r(s):
     line_ui_app.draw_r(s)
 
-
 def draw_m(s):
     line_ui_app.draw_m(s)
-
 
 def get_key():
     return line_ui_app.key
 
-
 def print(x):
     line_ui_app.print(x)
 
+def stop():
+    line_ui_app.stop()
 
-def start(mod_name):
-    line_ui_app.load_mod(mod_name)
+def start(mod):
+    line_ui_app.mod=mod
     wrapper(line_ui_app.main_loop)
