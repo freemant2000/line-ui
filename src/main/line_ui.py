@@ -101,7 +101,10 @@ class LineUIApp:
 
     def safe_get_key(self):
         try:
-            return self.scr.getkey()
+            k=self.scr.getkey()
+            if k=="\n":
+              k="ENTER"
+            return k
         except:
             return ""
 

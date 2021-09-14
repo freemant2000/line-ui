@@ -1,16 +1,17 @@
 from line_ui import *
+
 a=""
 
 def on_ready():
   draw(a)
 
-def on_second():
-  global a
-  a=a+"B"
-  draw(a)
-
 def on_key():
-  stop()
-
+  global a
+  b=get_key()
+  if b=="ENTER":
+    draw(str(int(a)*2))
+  else:
+    a=a+b
+    draw(a)
 
 start(globals())
