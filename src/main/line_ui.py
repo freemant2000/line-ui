@@ -19,7 +19,10 @@ class LineUIApp:
       self.console_lines.pop(0)
     self.console_c.erase()
     for i in range(len(self.console_lines)):
-      self.console_c.insstr(i, 0, self.console_lines[i])
+      s=self.console_lines[i]
+      if len(s)>self.line_size:
+        s=s[:self.line_size]
+      LineUIApp.safe_addstr(self.console_c, i, 0, s)
     self.console_c.refresh()
   def init_line_pane(self):
     line_pane=self.scr.derwin(3, self.line_size+2, 0, 0)
@@ -30,7 +33,14 @@ class LineUIApp:
     console=self.scr.derwin(self.console_height+2, self.line_size+2, 3, 0)
     console.border()
     console.refresh()
-    self.console_c=console.derwin(self.console_height, self.line_size-2, 1, 1)
+    self.console_c=console.derwin(self.console_height, self.line_size, 1, 1)
+  @staticmethod
+  def safe_addstr(win, y, x, s):
+    h,w=win.getmaxyx()
+    if y==h-1 and x+len(s)==w:
+      win.insstr(y, x, s)
+    else:
+      win.addstr(y, x, s)
   def main_loop(self, scr):
     self.scr=scr
     self.scr.nodelay(True)
@@ -63,7 +73,7 @@ class LineUIApp:
       s=s[:len(s)-d]
     if erase:
       self.line_pane_c.erase()
-    self.line_pane_c.insstr(0, x, s)
+    LineUIApp.safe_addstr(self.line_pane_c, 0, x, s)
     self.line_pane_c.refresh()
   def show_r(self, s):
     self.show_at(self.line_size-len(s), s)
