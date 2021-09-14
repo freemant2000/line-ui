@@ -1,4 +1,4 @@
-from line_ui import *
+from line_ui.core import *
 
 a=""
 
