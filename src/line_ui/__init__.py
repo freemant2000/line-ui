@@ -72,14 +72,19 @@ class LineUIApp:
             sleep(1 / LineUIApp.FRAMES_PER_SECOND)
 
     def call_handler(self, handler_name):
-      h=self.mod.get(handler_name)
-      if h:
-        h()
+        if isinstance(handler_name , str):
+            h=self.mod.get(handler_name)
+        elif callable(handler_name): #actually a func?
+            h=handler_name
+        else:
+            raise ValueError("a handler name or function is required")
+        if h:
+            h()
 
     def schedule(self, seconds, handler_name):
-        if self.sched_count>=0:
+        if self.sched_count>0:
            raise RuntimeError("At most one task can be scheduled") 
-        self.sched_count=seconds/LineUIApp.FRAMES_PER_SECOND
+        self.sched_count=int(seconds*LineUIApp.FRAMES_PER_SECOND)
         self.sched_handler_name=handler_name
 
     def stop(self):
@@ -135,6 +140,9 @@ def get_key():
 
 def print(x):
     line_ui_app.print(x)
+
+def schedule(seconds, handler_name):
+    line_ui_app.schedule(seconds, handler_name)
 
 def stop():
     line_ui_app.stop()
