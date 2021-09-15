@@ -12,7 +12,7 @@ def on_second():
   global n
   n=n+1
   draw_r(str(n))
-  print("got dddde "+str(n))
+  print("got abcde "+str(n))
 
 
 def on_key():
@@ -21,6 +21,8 @@ def on_key():
   if k=="KEY_UP":
     n=n+1
     draw_r(str(n))
+  elif k=="q":
+    stop()
 
 start(globals())
 
