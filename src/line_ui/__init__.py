@@ -1,4 +1,5 @@
 from curses import wrapper, curs_set
+import curses
 from time import sleep
 
 class LineUIApp:
@@ -106,11 +107,11 @@ class LineUIApp:
         LineUIApp.safe_addstr(self.line_pane_c, 0, x, s)
         self.line_pane_c.refresh()
 
-    def draw_r(self, s):
-        self.draw_at(self.line_size - len(s), s)
+    def draw_r(self, s, erase=True):
+        self.draw_at(self.line_size - len(s), s, erase)
 
-    def draw_m(self, s):
-        self.draw_at(int((self.line_size - len(s)) / 2), s)
+    def draw_m(self, s, erase=True):
+        self.draw_at(int((self.line_size - len(s)) / 2), s, erase)
 
     def safe_get_key(self):
         try:
@@ -123,17 +124,20 @@ class LineUIApp:
 
 line_ui_app = LineUIApp()
 
-def draw(s):
-    line_ui_app.draw_at(0, s)
+def draw(s, erase=True):
+    draw_l(s, erase)
 
-def draw_at(x, s):
-    line_ui_app.draw_at(x, s)
+def draw_at(x, s, erase=True):
+    line_ui_app.draw_at(x, s, erase)
 
-def draw_r(s):
-    line_ui_app.draw_r(s)
+def draw_l(s, erase=True):
+    line_ui_app.draw_at(0, s, erase)
 
-def draw_m(s):
-    line_ui_app.draw_m(s)
+def draw_r(s, erase=True):
+    line_ui_app.draw_r(s, erase)
+
+def draw_m(s, erase=True):
+    line_ui_app.draw_m(s, erase)
 
 def get_key():
     return line_ui_app.key
@@ -143,6 +147,9 @@ def print(x):
 
 def schedule(seconds, handler_name):
     line_ui_app.schedule(seconds, handler_name)
+
+def beep():
+    curses.beep()
 
 def stop():
     line_ui_app.stop()
