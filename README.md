@@ -11,7 +11,7 @@ It provides the following features:
 * schedule a call to a function a certain seconds later.
 * make a beep.
 
-With these a Python learn can make apps like: digital clock, 
+With these a Python learner can make apps like: digital clock, 
 the classic digit invaders game, slapjack, etc.
 
 ## How to use
