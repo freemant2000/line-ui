@@ -36,6 +36,6 @@ def on_key():
         stop()  # use this to tell the app to quit
 
 def hide_x():
-  draw_l(" ", False)
+    draw_l(" ", False)
 
 start(globals())  # must do this to kick start the app with the UI
