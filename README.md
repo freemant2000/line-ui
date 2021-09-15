@@ -1,7 +1,7 @@
 # line-ui
 This is a small Python package to provide an API to a one-line user interface (like that in a calculator) for Python learners.
 
-![a sample line UI app](./images/lineui.png)
+![a sample line UI app](https://github.com/freemant2000/line-ui/raw/main/images/lineui.png)
 
 It provides the following features:
 * output in the line (left, right or middle aligned).
