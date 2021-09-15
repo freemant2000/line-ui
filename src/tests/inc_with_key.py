@@ -22,5 +22,5 @@ def on_key():
     n=n+1
     draw_r(str(n))
 
-start("inc_with_key")
+start(globals())
 

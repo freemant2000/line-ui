@@ -2,6 +2,8 @@ from curses import wrapper, curs_set
 from time import sleep
 
 class LineUIApp:
+    FRAMES_PER_SECOND=20
+
     def __init__(self):
         self.line_pane_c = None
         self.console_c = None
@@ -9,10 +11,8 @@ class LineUIApp:
         self.line_size = 11
         self.console_height = 5
         self.console_lines = []
+        self.sched_count = -1
         self.mod = None
-
-    def load_mod(self, mod_name):
-        self.mod = importlib.import_module(mod_name)
 
     def print(self, x):
         self.console_lines.append(str(x))
@@ -61,16 +61,26 @@ class LineUIApp:
                 self.key = k
                 self.call_handler("on_key")
             n += 1
-            if n == 20:
+            if n == LineUIApp.FRAMES_PER_SECOND:
                 self.call_handler("on_second")
                 n = 0
+            if self.sched_count>=0:
+                if self.sched_count==0:
+                    self.call_handler(self.sched_handler_name)
+                self.sched_count-=1
             self.call_handler("on_update")
-            sleep(1 / 20)
+            sleep(1 / LineUIApp.FRAMES_PER_SECOND)
 
     def call_handler(self, handler_name):
       h=self.mod.get(handler_name)
       if h:
         h()
+
+    def schedule(self, seconds, handler_name):
+        if self.sched_count>=0:
+           raise RuntimeError("At most one task can be scheduled") 
+        self.sched_count=seconds/LineUIApp.FRAMES_PER_SECOND
+        self.sched_handler_name=handler_name
 
     def stop(self):
       self.done=True
