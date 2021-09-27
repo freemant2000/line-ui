@@ -1,10 +1,9 @@
 from curses import wrapper, curs_set
-import curses
 from time import sleep
+import importlib
+
 
 class LineUIApp:
-    FRAMES_PER_SECOND=20
-
     def __init__(self):
         self.line_pane_c = None
         self.console_c = None
@@ -12,8 +11,10 @@ class LineUIApp:
         self.line_size = 11
         self.console_height = 5
         self.console_lines = []
-        self.sched_count = -1
         self.mod = None
+
+    def load_mod(self, mod_name):
+        self.mod = importlib.import_module(mod_name)
 
     def print(self, x):
         self.console_lines.append(str(x))
@@ -62,31 +63,16 @@ class LineUIApp:
                 self.key = k
                 self.call_handler("on_key")
             n += 1
-            if n == LineUIApp.FRAMES_PER_SECOND:
+            if n == 20:
                 self.call_handler("on_second")
                 n = 0
-            if self.sched_count>=0:
-                if self.sched_count==0:
-                    self.call_handler(self.sched_handler_name)
-                self.sched_count-=1
             self.call_handler("on_update")
-            sleep(1 / LineUIApp.FRAMES_PER_SECOND)
+            sleep(1 / 20)
 
     def call_handler(self, handler_name):
-        if isinstance(handler_name , str):
-            h=self.mod.get(handler_name)
-        elif callable(handler_name): #actually a func?
-            h=handler_name
-        else:
-            raise ValueError("a handler name or function is required")
-        if h:
-            h()
-
-    def schedule(self, seconds, handler_name):
-        if self.sched_count>0:
-           raise RuntimeError("At most one task can be scheduled") 
-        self.sched_count=int(seconds*LineUIApp.FRAMES_PER_SECOND)
-        self.sched_handler_name=handler_name
+      h=self.mod.get(handler_name)
+      if h:
+        h()
 
     def stop(self):
       self.done=True
@@ -95,8 +81,6 @@ class LineUIApp:
         if x < 0:
             d = -x
             x = 0
-            if d>=len(s):
-                return
             s = s[d:]
         if x >= self.line_size:
             return
@@ -109,11 +93,11 @@ class LineUIApp:
         LineUIApp.safe_addstr(self.line_pane_c, 0, x, s)
         self.line_pane_c.refresh()
 
-    def draw_r(self, s, erase=True):
-        self.draw_at(self.line_size - len(s), s, erase)
+    def draw_r(self, s):
+        self.draw_at(self.line_size - len(s), s)
 
-    def draw_m(self, s, erase=True):
-        self.draw_at(int((self.line_size - len(s)) / 2), s, erase)
+    def draw_m(self, s):
+        self.draw_at(int((self.line_size - len(s)) / 2), s)
 
     def safe_get_key(self):
         try:
@@ -126,32 +110,23 @@ class LineUIApp:
 
 line_ui_app = LineUIApp()
 
-def draw(s, erase=True):
-    draw_l(s, erase)
+def draw(s):
+    line_ui_app.draw_at(0, s)
 
-def draw_at(x, s, erase=True):
-    line_ui_app.draw_at(x, s, erase)
+def draw_at(x, s):
+    line_ui_app.draw_at(x, s)
 
-def draw_l(s, erase=True):
-    line_ui_app.draw_at(0, s, erase)
+def draw_r(s):
+    line_ui_app.draw_r(s)
 
-def draw_r(s, erase=True):
-    line_ui_app.draw_r(s, erase)
-
-def draw_m(s, erase=True):
-    line_ui_app.draw_m(s, erase)
+def draw_m(s):
+    line_ui_app.draw_m(s)
 
 def get_key():
     return line_ui_app.key
 
 def print(x):
     line_ui_app.print(x)
-
-def schedule(seconds, handler_name):
-    line_ui_app.schedule(seconds, handler_name)
-
-def beep():
-    curses.beep()
 
 def stop():
     line_ui_app.stop()
