@@ -94,6 +94,8 @@ class LineUIApp:
         if x < 0:
             d = -x
             x = 0
+            if d>=len(s):
+                return
             s = s[d:]
         if x >= self.line_size:
             return
