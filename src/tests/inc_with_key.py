@@ -16,7 +16,7 @@ def on_update():
 def on_second():
     global n
     n = n+1
-    draw_r(str(n), False) # False tells the UI not to erase
+    draw_r(str(n)) # False tells the UI not to erase
     # you can use print to print to the lower box
     print("got abcde "+str(n))
     beep() # make a beep

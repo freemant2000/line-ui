@@ -51,6 +51,8 @@ class LineUIApp:
             win.addstr(y, x, s)
 
     def main_loop(self, scr):
+        self.n = 0
+        self.n_drawn=-1
         self.scr = scr
         self.scr.nodelay(True)
         self.init_line_pane()
@@ -58,16 +60,14 @@ class LineUIApp:
         curs_set(0)
         self.call_handler("on_ready")
         self.done = False
-        n = 0
         while not self.done:
             k = self.safe_get_key()
             if k != "":
                 self.key = k
                 self.call_handler("on_key")
-            n += 1
-            if n == LineUIApp.FRAMES_PER_SECOND:
+            self.n += 1
+            if self.n%LineUIApp.FRAMES_PER_SECOND==0:
                 self.call_handler("on_second")
-                n = 0
             if self.sched_count >= 0:
                 if self.sched_count == 0:
                     self.call_handler(self.sched_handler_name)
@@ -94,10 +94,11 @@ class LineUIApp:
     def stop(self):
         self.done = True
 
-    def draw_at(self, x, s, erase=True):
-        if erase:
+    def draw_at(self, x, s):
+        if self.n!=self.n_drawn:
             self.line_pane_c.erase()
             self.line_pane_c.refresh()
+            self.n_drawn=self.n
         if x < 0:
             d = -x
             x = 0
@@ -113,11 +114,11 @@ class LineUIApp:
         LineUIApp.safe_addstr(self.line_pane_c, 0, x, s)
         self.line_pane_c.refresh()
 
-    def draw_r(self, s, erase=True):
-        self.draw_at(self.line_size - len(s), s, erase)
+    def draw_r(self, s):
+        self.draw_at(self.line_size - len(s), s)
 
-    def draw_m(self, s, erase=True):
-        self.draw_at(int((self.line_size - len(s)) / 2), s, erase)
+    def draw_m(self, s):
+        self.draw_at(int((self.line_size - len(s)) / 2), s)
 
     def safe_get_key(self):
         try:
@@ -131,30 +132,23 @@ class LineUIApp:
 
 line_ui_app = LineUIApp()
 
+def draw(s):
+    draw_l(s)
 
-def draw(s, erase=True):
-    draw_l(s, erase)
+def draw_at(x, s):
+    line_ui_app.draw_at(x, s)
 
+def draw_l(s):
+    line_ui_app.draw_at(0, s)
 
-def draw_at(x, s, erase=True):
-    line_ui_app.draw_at(x, s, erase)
+def draw_r(s):
+    line_ui_app.draw_r(s)
 
-
-def draw_l(s, erase=True):
-    line_ui_app.draw_at(0, s, erase)
-
-
-def draw_r(s, erase=True):
-    line_ui_app.draw_r(s, erase)
-
-
-def draw_m(s, erase=True):
-    line_ui_app.draw_m(s, erase)
-
+def draw_m(s):
+    line_ui_app.draw_m(s)
 
 def get_key():
     return line_ui_app.key
-
 
 def print(x):
     line_ui_app.print(x)
