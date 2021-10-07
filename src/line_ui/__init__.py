@@ -51,8 +51,6 @@ class LineUIApp:
             win.addstr(y, x, s)
 
     def main_loop(self, scr):
-        self.n = 0
-        self.n_drawn=-1
         self.scr = scr
         self.scr.nodelay(True)
         self.init_line_pane()
@@ -60,14 +58,16 @@ class LineUIApp:
         curs_set(0)
         self.call_handler("on_ready")
         self.done = False
+        n = 0
         while not self.done:
             k = self.safe_get_key()
             if k != "":
                 self.key = k
                 self.call_handler("on_key")
-            self.n += 1
-            if self.n%LineUIApp.FRAMES_PER_SECOND==0:
+            n += 1
+            if n==LineUIApp.FRAMES_PER_SECOND:
                 self.call_handler("on_second")
+                n=0
             if self.sched_count >= 0:
                 if self.sched_count == 0:
                     self.call_handler(self.sched_handler_name)
@@ -94,11 +94,11 @@ class LineUIApp:
     def stop(self):
         self.done = True
 
+    def erase(self):
+        self.line_pane_c.erase()
+        self.line_pane_c.refresh()
+
     def draw_at(self, x, s):
-        if self.n!=self.n_drawn:
-            self.line_pane_c.erase()
-            self.line_pane_c.refresh()
-            self.n_drawn=self.n
         if x < 0:
             d = -x
             x = 0
@@ -146,6 +146,9 @@ def draw_r(s):
 
 def draw_m(s):
     line_ui_app.draw_m(s)
+
+def erase():
+    line_ui_app.erase()
 
 def get_key():
     return line_ui_app.key

@@ -10,8 +10,10 @@ def on_key():
   k=get_key()
   if k=="KEY_RIGHT":
     x=x+1
+    erase()
     draw_at(x, "A")
   elif k=="KEY_LEFT":
     x=x-1
+    erase()
     draw_at(x, "A")
 start(globals())
