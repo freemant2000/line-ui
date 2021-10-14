@@ -1,4 +1,18 @@
-from random import randint
+from line_ui import *
 
-a=randint(4, 6)
-print(0.1*a)
+a=5
+c=1
+
+def on_ready():
+  print(a)
+
+def on_second():
+  global a
+  a=a+c
+  print(a)
+
+def on_key():
+  global c
+  c=2
+  
+start(globals())

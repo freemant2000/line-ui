@@ -13,7 +13,8 @@ class LineUIApp:
         self.line_size = 11
         self.console_height = 5
         self.console_lines = []
-        self.sched_count = -1
+        self.sched_counts = []
+        self.sched_handlers = []
         self.mod = None
 
     def print(self, x):
@@ -68,12 +69,20 @@ class LineUIApp:
             if n==LineUIApp.FRAMES_PER_SECOND:
                 self.call_handler("on_second")
                 n=0
-            if self.sched_count >= 0:
-                if self.sched_count == 0:
-                    self.call_handler(self.sched_handler_name)
-                self.sched_count -= 1
+            self.check_sched_handlers()
             self.call_handler("on_update")
             sleep(1 / LineUIApp.FRAMES_PER_SECOND)
+
+    def check_sched_handlers(self):
+        i=0
+        while i<len(self.sched_counts):
+            self.sched_counts[i]-=1
+            if self.sched_counts[i] == 0:
+                self.sched_counts.pop(i)
+                h=self.sched_handlers.pop(i)
+                self.call_handler(h)
+            else:
+                i+=1
 
     def call_handler(self, handler_name):
         if isinstance(handler_name, str):
@@ -86,10 +95,10 @@ class LineUIApp:
             h()
 
     def schedule(self, seconds, handler_name):
-        if self.sched_count > 0:
-            raise RuntimeError("At most one task can be scheduled")
-        self.sched_count = int(seconds*LineUIApp.FRAMES_PER_SECOND)
-        self.sched_handler_name = handler_name
+        if len(self.sched_counts) > 5:
+            raise RuntimeError("At most five tasks can be scheduled")
+        self.sched_counts.append(int(seconds*LineUIApp.FRAMES_PER_SECOND))
+        self.sched_handlers.append(handler_name)
 
     def stop(self):
         self.done = True
