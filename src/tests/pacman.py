@@ -1,22 +1,25 @@
 from line_ui import *
 
+x=2
 s=0
-p=0
 
 def on_ready():
-  draw("C")
+  draw_at(14, "C")
 
 def on_key():
-  global s, p
+  global x, s
   k=get_key()
   if k=="KEY_RIGHT":
-    p=p+1
+    x=x+1
     s=s+1
-  if s%2==0:
-    look="C"
-  else:
-    look="c"
-  draw_at(p, look)
-
-
+    erase()
+    if s%2==0:
+      look="C"
+    else:
+      look="c"
+    draw_at(x, look)
+  elif k=="KEY_LEFT":
+    x=x-1
+    erase()
+    draw_at(x, "C")
 start(globals())

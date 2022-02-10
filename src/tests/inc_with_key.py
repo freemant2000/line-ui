@@ -16,7 +16,7 @@ def on_update():
 def on_second():
     global n
     n = n+1
-    draw_r(str(n), False) # False tells the UI not to erase
+    draw_r(str(n)) 
     # you can use print to print to the lower box
     print("got abcde "+str(n))
     beep() # make a beep
@@ -28,14 +28,14 @@ def on_key():
     k = get_key()
     if k == "KEY_UP":
         n = n+1
-        draw_r(str(n), False)
+        draw_r(str(n))
     elif k==" ":
-        draw_l("X", False) # draw a left-aligned string
+        draw_l("X") # draw a left-aligned string
         schedule(1, hide_x)# hide X in one second
     elif k == "q":
         stop()  # use this to tell the app to quit
 
 def hide_x():
-    draw_l(" ", False)
+    draw_l(" ")
 
 start(globals())  # must do this to kick start the app with the UI
