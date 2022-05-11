@@ -27,4 +27,4 @@ def on_key():
     score=score-1
     draw_r(str(score))
 
-start(globals())
+start()

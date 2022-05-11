@@ -51,7 +51,4 @@ def f2():
   a=0
   draw_all()
 
-
-
-
-start(globals())
+start()

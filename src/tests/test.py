@@ -15,4 +15,4 @@ def on_key():
   global c
   c=2
   
-start(globals())
+start()

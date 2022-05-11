@@ -19,5 +19,5 @@ def on_update():
   pass
 
 
-start(globals())
+start()
 

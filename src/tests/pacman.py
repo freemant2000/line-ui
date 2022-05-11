@@ -16,4 +16,4 @@ def on_key():
     x=x-1
     erase()
     draw_at(x, "A")
-start(globals())
+start()
