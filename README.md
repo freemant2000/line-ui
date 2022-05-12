@@ -58,4 +58,4 @@ is incremented every second or when the user presses the up arrow key.
     def hide_x():
         draw_l(" ")
 
-    start(globals())  # must do this to kick start the app with the UI
+    start()  # must do this to kick start the app with the UI

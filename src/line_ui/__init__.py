@@ -108,6 +108,8 @@ class LineUIApp:
         self.line_pane_c.refresh()
 
     def draw_at(self, x, s):
+        if type(s)!=str:
+            raise ValueError(f"{s} is not a str")
         if x < 0:
             d = -x
             x = 0
@@ -178,6 +180,7 @@ def stop():
     line_ui_app.stop()
 
 
-def start(mod):
-    line_ui_app.mod = mod
+def start(mod=None):
+    import __main__
+    line_ui_app.mod = vars(__main__)
     wrapper(line_ui_app.main_loop)

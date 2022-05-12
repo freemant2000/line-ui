@@ -21,5 +21,5 @@ def on_key():
   elif k=="KEY_LEFT":
     x=x-1
     erase()
-    draw_at(x, "C")
-start(globals())
+    draw_at(x, "A")
+start()

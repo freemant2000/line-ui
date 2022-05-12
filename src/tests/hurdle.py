@@ -53,4 +53,4 @@ def draw_all():
     print("loss")
     beep()
 
-start(globals())
+start()
