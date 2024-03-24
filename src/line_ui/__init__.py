@@ -161,24 +161,23 @@ def draw_m(s):
 def erase():
     line_ui_app.erase()
 
-def get_key():
+def get_key()->str:
     return line_ui_app.key
 
 def print(x):
     line_ui_app.print(x)
 
+def get_ui()->LineUIApp:
+    return line_ui_app
 
-def schedule(seconds, handler_name):
+def schedule(seconds: int, handler_name):
     line_ui_app.schedule(seconds, handler_name)
-
 
 def beep():
     curses.beep()
 
-
 def stop():
     line_ui_app.stop()
-
 
 def start(mod=None):
     import __main__
